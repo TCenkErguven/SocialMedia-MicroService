@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IAuthRepository extends JpaRepository<Auth,Integer> {
+public interface IAuthRepository extends JpaRepository<Auth,Long> {
 
     Optional<Auth> findByUsernameAndPassword(String username, String password);
 }

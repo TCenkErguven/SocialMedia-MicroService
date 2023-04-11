@@ -6,6 +6,7 @@ import com.bilgeadam.dto.request.RegisterRequestDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
+import com.bilgeadam.manager.IUserManager;
 import com.bilgeadam.mapper.IAuthMapper;
 import com.bilgeadam.repository.IAuthRepository;
 import com.bilgeadam.repository.entity.Auth;
@@ -18,11 +19,14 @@ import java.util.Optional;
 
 
 @Service
-public class AuthService extends ServiceManager<Auth,Integer> {
+public class AuthService extends ServiceManager<Auth,Long> {
+    private final IUserManager iUserManager;
     private final IAuthRepository iAuthRepository;
-    public AuthService(IAuthRepository iAuthRepository){
+    public AuthService(IAuthRepository iAuthRepository,
+                       IUserManager iUserManager){
         super(iAuthRepository);
         this.iAuthRepository = iAuthRepository;
+        this.iUserManager = iUserManager;
     }
 
     public RegisterResponseDto register(RegisterRequestDto dto){
@@ -31,6 +35,7 @@ public class AuthService extends ServiceManager<Auth,Integer> {
             throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
         auth.setActivationCode(CodeGenerator.generateCode());
         save(auth);
+        iUserManager.createUser(IAuthMapper.INSTANCE.fromAuthToNewCreateUserDto(auth));
         RegisterResponseDto responseDto = IAuthMapper.INSTANCE.toRegisterResponseDto(auth);
         return responseDto;
     }
@@ -40,6 +45,7 @@ public class AuthService extends ServiceManager<Auth,Integer> {
             if(optionalAuth.get().getActivationCode().equals(dto.getActivationCode())) {
                 optionalAuth.get().setStatus(EStatus.ACTIVE);
                 update(optionalAuth.get());
+                iUserManager.activateStatus(optionalAuth.get().getId());
                 return true;
             }
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);

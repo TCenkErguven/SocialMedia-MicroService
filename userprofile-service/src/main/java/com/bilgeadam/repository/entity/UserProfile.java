@@ -1,6 +1,5 @@
 package com.bilgeadam.repository.entity;
 
-import com.bilgeadam.repository.entity.enums.ERole;
 import com.bilgeadam.repository.entity.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,24 +9,23 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+
 @Data
-@SuperBuilder //extend'lendiği bir classı olduğu için Builder yerine konulur ata classa'da bu anotasyon koyulur bu durumda
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tblauth")
-public class Auth extends Base{
+public class UserProfile extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    private Long authId;
     private String username;
     private String email;
-    private String password;
-    private String activationCode;
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private ERole role = ERole.USER;
+    private String phone;
+    private String avatar;
+    private String info;
+    private String address;
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private EStatus status = EStatus.PENDING;

@@ -14,5 +14,14 @@
 
 ## (boolean)login metodu yazınız. Login metodu için bir dto oluşturunuz. Dto --> username, password
 ## Kullanıcının status' ü ACTIVE yapılmadıysa hata dönmelidir. yazınız. Bu metot için bir dto oluşturunuz. Dto --> id,activateStatus
-
 ## Exception katmanını projeye dahil ediniz.
+
+## OpenFeign için gerekli işlemleri yapınız. Bağımlılığını ekleyniz, bir dto(NewCreateUserRegisterDto) oluşturarak auth-service'de 
+## yapılan register işleminin user-service'de çalışmasını sağlayınız. OpenFeign için 'manager' kaymanı oluşturunuz.
+
+## Auth-Service'deki activateStatus metodu kullanıldığında register olan kullanıcının durumu ACTIVE olarak değişmektedir.
+## Ancak bu değişiklik User-Profile service'e aktarılan kullanıcının durumunda bir değişiklik yaratmamaktadır.
+
+## Bu durumu gidermek için activateStatus metodu feign client ile user-profile service' e aktarılmalıdır.
+## Bunun için gerekli işlemleri yapınız.
+## UserManager' da yazacağınız activateStatus metodu yalnızca authId parametresi almalıdır.
