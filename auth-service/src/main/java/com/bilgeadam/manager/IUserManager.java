@@ -3,12 +3,11 @@ package com.bilgeadam.manager;
 import com.bilgeadam.dto.request.NewCreateUserRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.bilgeadam.constants.ApiUrls.DELETE_BY_ID;
 
 @FeignClient(
         name = "auth-userprofile",
@@ -19,5 +18,7 @@ public interface IUserManager {
     public ResponseEntity<Boolean> createUser(@RequestBody NewCreateUserRequestDto dto);
     @GetMapping("/activate-status/{authId}")
     public ResponseEntity<Boolean> activateStatus(@PathVariable Long authId);
+    @DeleteMapping(DELETE_BY_ID + "/{authId}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long authId);
 }
 

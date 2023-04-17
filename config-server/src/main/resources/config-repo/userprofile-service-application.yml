@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: userprofileDB
+      username: JavaUser
+      password: root
+
+my-application:
+  jwt:
+    secretkey: ${secretkey}
+    audience: ${audience}
+    issuer: ${issuer}
