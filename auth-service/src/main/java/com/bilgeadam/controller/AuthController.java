@@ -30,6 +30,12 @@ public class AuthController {
             return ResponseEntity.ok(authService.register(dto));
         throw new RuntimeException("Şifreleri aynı giriniz");
     }
+    @PostMapping(REGISTER+"rabbitMq")
+    public ResponseEntity<RegisterResponseDto> registerWithRabbitMq(@RequestBody @Valid RegisterRequestDto dto){
+        if(dto.getPassword().equals(dto.getRepassword()))
+            return ResponseEntity.ok(authService.registerWithRabbitMq(dto));
+        throw new RuntimeException("Şifreleri aynı giriniz");
+    }
     @PostMapping(ACTIVATE_STATUS)
     public ResponseEntity<Boolean> activateStatus(@RequestBody @Valid ActivateStatusRequestDto dto)//default RequestParam
     {

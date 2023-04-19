@@ -6,6 +6,8 @@ import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserProfileManagerException;
 import com.bilgeadam.manager.IAuthManager;
 import com.bilgeadam.mapper.IUserProfileMapper;
+import com.bilgeadam.rabbitmq.consumer.RegisterConsumer;
+import com.bilgeadam.rabbitmq.model.RegisterModel;
 import com.bilgeadam.repository.IUserProfileRepository;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.repository.entity.enums.EStatus;
@@ -32,6 +34,15 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
     public Boolean createUser(NewCreateUserRequestDto dto){
         try {
             save(IUserProfileMapper.INSTANCE.fromDtoToUserProfile(dto));
+            return true;
+        }catch (Exception e){
+            throw new RuntimeException("Beklenmeyen bir hata oluştu");
+        }
+    }
+
+    public Boolean createUserWithRabbitMq(RegisterModel model){
+        try {
+            save(IUserProfileMapper.INSTANCE.fromRegisterModelToUserProfile(model));
             return true;
         }catch (Exception e){
             throw new RuntimeException("Beklenmeyen bir hata oluştu");

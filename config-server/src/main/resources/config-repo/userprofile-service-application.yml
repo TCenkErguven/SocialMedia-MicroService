@@ -2,6 +2,16 @@ server:
   port: 8080
 
 spring:
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411
+    service:
+      name: user-profile-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: java7
+    password: root
   data:
     mongodb:
       host: localhost
@@ -15,3 +25,8 @@ my-application:
     secretkey: ${secretkey}
     audience: ${audience}
     issuer: ${issuer}
+
+rabbitmq:
+  exchange-auth: auth-exchange
+  registerKey: register-key
+  queueRegister: register-queue

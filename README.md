@@ -47,3 +47,6 @@
 ## config-server'In application.yml'ını yazınız.
 ## config-repo adında bir paket oluşturarak içerisine auth-service ve userprofile-service'in ayaralarını giriniz.
 ## userprofile ve auth service'de içi boşalan .yml dosyalarını config-server üzerinden çalıştıracak ayarları yazınız.
+
+# 8-Projenin Zipkin'in bağımlılıklarını ekleyiniz.
+## Zipkin için bir imaj oluşturunuz ve gerekli ayarları projenizde yapınız.

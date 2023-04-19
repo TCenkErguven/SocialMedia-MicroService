@@ -9,6 +9,8 @@ import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.IUserManager;
 import com.bilgeadam.mapper.IAuthMapper;
+import com.bilgeadam.rabbitmq.model.RegisterModel;
+import com.bilgeadam.rabbitmq.producer.RegisterProducer;
 import com.bilgeadam.repository.IAuthRepository;
 import com.bilgeadam.repository.entity.Auth;
 import com.bilgeadam.repository.entity.enums.EStatus;
@@ -26,13 +28,16 @@ public class AuthService extends ServiceManager<Auth,Long> {
     private final IUserManager iUserManager;
     private final IAuthRepository iAuthRepository;
     private final JwtTokenProvider tokenProvider;
+    private final RegisterProducer registerProducer;
     public AuthService(IAuthRepository iAuthRepository,
                        IUserManager iUserManager,
-                       JwtTokenProvider tokenProvider){
+                       JwtTokenProvider tokenProvider,
+                       RegisterProducer registerProducer){
         super(iAuthRepository);
         this.iAuthRepository = iAuthRepository;
         this.iUserManager = iUserManager;
         this.tokenProvider = tokenProvider;
+        this.registerProducer = registerProducer;
     }
 
     public RegisterResponseDto register(RegisterRequestDto dto){
@@ -41,7 +46,18 @@ public class AuthService extends ServiceManager<Auth,Long> {
             throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
         auth.setActivationCode(CodeGenerator.generateCode());
         save(auth);
+        // OpenFeign
         iUserManager.createUser(IAuthMapper.INSTANCE.fromAuthToNewCreateUserDto(auth));
+        RegisterResponseDto responseDto = IAuthMapper.INSTANCE.toRegisterResponseDto(auth);
+        return responseDto;
+    }
+    public RegisterResponseDto registerWithRabbitMq(RegisterRequestDto dto){
+        Auth auth = IAuthMapper.INSTANCE.toAuth(dto);
+        if(!dto.getPassword().equals(dto.getRepassword()))
+            throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
+        auth.setActivationCode(CodeGenerator.generateCode());
+        save(auth);
+        registerProducer.sendNewUser(IAuthMapper.INSTANCE.fromAuthToRegisterModel(auth));
         RegisterResponseDto responseDto = IAuthMapper.INSTANCE.toRegisterResponseDto(auth);
         return responseDto;
     }
